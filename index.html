@@ -14,13 +14,13 @@ body{
   background: radial-gradient(circle at top,#1b0f2b,#0b1020);
   font-family: system-ui;
   overflow:hidden;
-  color:white;
   display:flex;
   justify-content:center;
   align-items:center;
+  color:white;
 }
 
-/* ROSE PETALS */
+/* PETALS */
 .petal{
   position:fixed;
   top:-40px;
@@ -32,44 +32,46 @@ body{
   animation:fall linear infinite;
 }
 @keyframes fall{
-  to{
-    transform:translateY(110vh) rotate(360deg);
-  }
+  to{ transform:translateY(110vh) rotate(360deg); }
 }
 
-/* ENVELOPE */
+/* ENVELOPE + CARD WRAPPER */
+.wrapper{
+  text-align:center;
+  position:relative;
+}
+
 .envelope{
   width:320px;
-  height:220px;
+  height:200px;
   background:#fff;
-  position:relative;
   border-radius:10px;
   cursor:pointer;
   box-shadow:0 20px 60px rgba(0,0,0,.4);
+  position:relative;
+  margin:auto;
 }
 
-.envelope:before{
-  content:"";
+.flap{
   position:absolute;
-  top:0;
-  left:0;
-  right:0;
+  top:0; left:0; right:0;
   height:50%;
   background:#eee;
   clip-path:polygon(0 0,100% 0,50% 100%);
-  transition:transform .6s ease;
   transform-origin:top;
+  transition:transform .7s ease;
 }
 
-.open .envelope:before{
+.open .flap{
   transform:rotateX(180deg);
 }
 
 .card{
   display:none;
-  text-align:center;
   margin-top:20px;
 }
+
+h1{font-size:28px;}
 
 button{
   padding:14px 24px;
@@ -83,6 +85,11 @@ button{
 
 #yesBtn{background:#ff3b7a;color:white;}
 #noBtn{background:#eee;color:black;position:absolute;}
+
+.result{
+  display:none;
+  margin-top:15px;
+}
 </style>
 </head>
 
@@ -90,19 +97,28 @@ button{
 
 <audio id="song" src="https://h.uguu.se/UPGSgNWP.mp3"></audio>
 
-<div id="scene">
-  <div class="envelope" id="env"></div>
+<div class="wrapper" id="wrap">
+  <div class="envelope" id="env">
+    <div class="flap"></div>
+  </div>
 
   <div class="card" id="card">
     <h1>Joselyn… ¿quieres ser mi San Valentín? 💘</h1>
-    <button id="yesBtn">Sí 💖</button>
-    <button id="noBtn">No 🙃</button>
+    <div style="position:relative;height:120px;">
+      <button id="yesBtn" style="left:20%;">Sí 💖</button>
+      <button id="noBtn" style="left:60%;">No 🙃</button>
+    </div>
+
+    <div class="result" id="result">
+      <h2>¡SÍÍÍ! 🎉💞</h2>
+      <img src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" width="260">
+    </div>
   </div>
 </div>
 
 <script>
 // petals
-for(let i=0;i<25;i++){
+for(let i=0;i<30;i++){
   const p=document.createElement("div");
   p.className="petal";
   p.style.left=Math.random()*100+"vw";
@@ -110,23 +126,29 @@ for(let i=0;i<25;i++){
   document.body.appendChild(p);
 }
 
+const wrap=document.getElementById("wrap");
 const env=document.getElementById("env");
 const card=document.getElementById("card");
 const yes=document.getElementById("yesBtn");
 const no=document.getElementById("noBtn");
+const result=document.getElementById("result");
 const song=document.getElementById("song");
 
+// open envelope
 env.addEventListener("click",()=>{
-  env.parentElement.classList.add("open");
+  wrap.classList.add("open");
   card.style.display="block";
 });
 
+// runaway no
 no.addEventListener("mouseover",()=>{
-  no.style.left=Math.random()*80+"%";
-  no.style.top=Math.random()*80+"%";
+  no.style.left=Math.random()*70+"%";
+  no.style.top=Math.random()*60+"px";
 });
 
+// yes
 yes.addEventListener("click",()=>{
+  result.style.display="block";
   song.play();
   confetti();
 });
